@@ -26,22 +26,6 @@ const store = createStore(reducer);
 ReactDOM.render(<Provider><App /></Provider>, document.getElementById('root'));
 ```
 
-store/reducer.js
-
-```javascript
-
-// reducer function is defined
-const initialState = {
-    counter: 0,
-}
-
-const reducer = (state = initialState, action) => {
-    return state;
-}
-
-export default Reducer;
-```
-
 ## Pass state as props
 
 SomeContainer.js
@@ -75,70 +59,89 @@ export default connect(mapStateToProps)(SomeClass);
 
 SomeContainer.js
 
-```javascript
+```JavaScript
 
-import React, { Component } from 'react';
+    import React, { Component } from 'react';
 
-import { connect } from 'react-redux';
+    import { connect } from 'react-redux';
 
-class SomeClass extends Component {
-    .....
-    render() {
-        return (
+    class SomeClass extends Component {
+        .....
+        render() {
+            return (
 ```
 
-```html
-            <div>
-                {this.props.ctr}
-                <CounterControl label="Increment" clicked={this.props.onIncrementCounter} />
-                <CounterControl label="Decrement" clicked={this.props.onDecrementCounter} />
-            </div>
+```HTML
+                <div>
+                    {this.props.ctr}
+                    <CounterControl label="Increment" clicked={this.props.onIncrementCounter} />
+                    <CounterControl label="Decrement" clicked={this.props.onDecrementCounter} />
+                </div>
 ```
 
-```javascript
-        );
+```JavaScript
+            );
+        }
     }
-}
 
-const mapStateToProps = ......
+    const mapStateToProps = ......
 
-const mapDispatchToProps = dispatch => {
-    return {
-        onIncrementCounter: () => {
-            return dispatch({type: 'INCREMENT',  payload: 1})
-        },
-        onDecrementCounter: () => {
-            return dispatch({type: 'DECREMENT', payload: 1})
-        },
-    }
-};
+    const mapDispatchToProps = dispatch => {
+        return {
+            onIncrementCounter: () => {
+                return dispatch({type: 'INCREMENT',  payload: 1})
+            },
+            onDecrementCounter: () => {
+                return dispatch({type: 'DECREMENT', payload: 1})
+            },
+        }
+    };
 
-export default connect(mapStateToProps, mapDispatchToProps )(SomeClass);
+    export default connect(mapStateToProps, mapDispatchToProps )(SomeClass);
 ```
 
 ## Reducer
 
+Whenever store is changed, the reducer is called by the dispatcher
+
+Reducer takes in the current state and an action.
+
+### Location
+
+store/reducer.js
+
+### Defined
+
+    index.js
+
 ```javascript
-const initialState = {
-    counter: 0,
-}
+const store = createStore(reducer);
+```
 
-const Reducer = (state = initialState, action) => {
+### Example Usage
 
-    if (action.type === 'INCREMENT') {
-        return {
-            counter: state.counter + action.payload,
-        }
+```javascript
+    const initialState = {
+        counter: 0,
     }
 
-    if (action.type === 'DECREMENT') {
-        return {
-            counter: state.counter - action.payload,
+    const Reducer = (state = initialState, action) => {
+
+        switch (action.type) {
+
+            case 'INCREMENT':
+                return {
+                    counter: state.counter + action.payload,
+                };
+
+            case 'DECREMENT':
+                return {
+                    counter: state.counter - action.payload,
+                };
         }
+
+        return state;
     }
 
-    return state;
-}
-
-export default Reducer;
+    export default Reducer;
 ```
