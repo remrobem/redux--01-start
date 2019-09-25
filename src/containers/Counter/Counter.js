@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import CounterControl from '../../components/CounterControl/CounterControl';
 import CounterOutput from '../../components/CounterOutput/CounterOutput';
 
+import { connect } from 'react-redux';
+
 class Counter extends Component {
     state = {
         counter: 0
@@ -30,14 +32,43 @@ class Counter extends Component {
     render() {
         return (
             <div>
-                <CounterOutput value={this.state.counter} />
-                <CounterControl label="Increment" clicked={() => this.counterChangedHandler('inc')} />
-                <CounterControl label="Decrement" clicked={() => this.counterChangedHandler('dec')} />
-                <CounterControl label="Add 5" clicked={() => this.counterChangedHandler('add', 5)} />
-                <CounterControl label="Subtract 5" clicked={() => this.counterChangedHandler('sub', 5)} />
+                <CounterOutput value={this.props.ctr} />
+                <CounterControl label="Increment" clicked={this.props.onIncrementCounter} />
+                <CounterControl label="Decrement" clicked={this.props.onDecrementCounter} />
+                <CounterControl label="Add 5" clicked={this.props.onAddFive} />
+                <CounterControl label="Subtract 5" clicked={this.props.onSubtractFive} />
             </div>
         );
     }
-}
+};
 
-export default Counter;
+// map state to props when Counter component is used
+const mapStateToProps = state => {
+    return {
+        ctr: state.counter
+    }
+};
+
+// function to execute when action is dispatched from Counter component
+// the method names are props when this module is executed
+const mapDispatchToProps = dispatch => {
+    return {
+        onIncrementCounter: () => {
+            return dispatch({type: 'INCREMENT',  payload: 1})
+        },
+        onDecrementCounter: () => {
+            return dispatch({type: 'DECREMENT', payload: 1})
+        },
+        onAddFive: () => {
+            return dispatch({type: 'INCREMENT', payload: 5})
+        },
+        onSubtractFive: () => {
+            return dispatch({type: 'DECREMENT', payload: 5})
+        },
+    }
+};
+
+// connect is sent the state and dispatch and maps to props for when this component executes, 
+// and returns a function that takes the class as an argument and executes the class with the props 
+// (since this function deals with state, should be a container class)
+export default connect(mapStateToProps, mapDispatchToProps)(Counter);
